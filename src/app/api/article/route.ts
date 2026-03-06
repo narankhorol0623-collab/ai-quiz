@@ -5,11 +5,11 @@ export async function POST(request: NextRequest) {
   try {
     const article = await prisma.article.create({
       data: {
+        id: Date.now().toString(),
         title: "asd",
         content: "asd",
         summary: "asd",
         userId: "asdfasd",
-        id: Date.now().toString(),
       },
     });
 

@@ -14,10 +14,10 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json(
-      { message: "User created successfully!" },
+      { message: "Quiz created successfully!" },
       { status: 200 },
     );
   } catch (error) {
-    return new Response("Not available to create user!", { status: 400 });
+    return new Response("Not available to create quiz!", { status: 400 });
   }
 }

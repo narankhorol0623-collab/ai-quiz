@@ -1,6 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "../../../../lib/prisma";
 import { Webhook } from "svix";
+
+type Event = {
+  type: string;
+  data: {
+    id: string;
+    first_name: string;
+    last_name: string;
+    email_addresses: { email_address: string }[];
+  };
+};
+
 export async function POST(request: NextRequest) {
   try {
     const webhookSecret = process.env.CLERK_WEBHOOK_KEY;
@@ -12,9 +23,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const svixId = request.headers.get("svix-Id");
-    const svixTimestamp = request.headers.get("svix-Id");
-    const svixSignature = request.headers.get("svix-Id");
+    const svixId = request.headers.get("svix-id");
+    const svixTimestamp = request.headers.get("svix-timestamp");
+    const svixSignature = request.headers.get("svix-signature");
 
     if (!svixId || !svixSignature || !svixTimestamp) {
       return NextResponse.json({ message: "Error" }, { status: 400 });
@@ -28,13 +39,19 @@ export async function POST(request: NextRequest) {
         "svix-id": svixId,
         "svix-signature": svixSignature,
         "svix-timestamp": svixTimestamp,
-      });
+      }) as Event;
 
-      const user = await prisma.user.create({
+      if (event.type !== "user.created") {
+        return NextResponse.json({ message: "Ignore event" }, { status: 400 });
+      }
+
+      const { email_addresses, first_name, last_name, id } = event.data;
+
+      await prisma.user.create({
         data: {
-          id: Date.now().toString(),
-          email: "test@test.com",
-          username: "test",
+          id,
+          email: email_addresses[0].email_address,
+          username: `${first_name} ${last_name}`,
         },
       });
 
