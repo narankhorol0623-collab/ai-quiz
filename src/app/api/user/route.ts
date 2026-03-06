@@ -1,4 +1,3 @@
-
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "../../../../lib/prisma";
 import { Webhook } from "svix";
@@ -31,13 +30,11 @@ export async function POST(request: NextRequest, req: NextRequest) {
         "svix-timestamp": svixTimestamp,
       });
 
-      const article = await prisma.article.create({
+      const user = await prisma.user.create({
         data: {
-          title: "asd",
-          content: "asd",
-          summary: "asd",
-          userId: "asdfasd",
           id: Date.now().toString(),
+          email: "test@test.com",
+          username: "test",
         },
       });
 

@@ -51,3 +51,8 @@ export type Article = Prisma.ArticleModel
  * 
  */
 export type Quiz = Prisma.QuizModel
+/**
+ * Model User
+ * 
+ */
+export type User = Prisma.UserModel
