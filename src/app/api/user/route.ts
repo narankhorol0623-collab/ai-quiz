@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "../../../../lib/prisma";
 import { Webhook } from "svix";
-export async function POST(request: NextRequest, req: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
     const webhookSecret = process.env.CLERK_WEBHOOK_KEY;
 
@@ -12,16 +12,16 @@ export async function POST(request: NextRequest, req: NextRequest) {
       );
     }
 
-    const svixId = req.headers.get("svix-Id");
-    const svixTimestamp = req.headers.get("svix-Id");
-    const svixSignature = req.headers.get("svix-Id");
+    const svixId = request.headers.get("svix-Id");
+    const svixTimestamp = request.headers.get("svix-Id");
+    const svixSignature = request.headers.get("svix-Id");
 
     if (!svixId || !svixSignature || !svixTimestamp) {
       return NextResponse.json({ message: "Error" }, { status: 400 });
     }
 
     const webhook = new Webhook(webhookSecret);
-    const body = await req.text();
+    const body = await request.text();
 
     try {
       const event = webhook.verify(body, {
@@ -49,6 +49,9 @@ export async function POST(request: NextRequest, req: NextRequest) {
       );
     }
   } catch (error) {
-    return new Response("Not available to search!", { status: 400 });
+    return NextResponse.json(
+      { message: "Not available to search!" },
+      { status: 400 },
+    );
   }
 }
