@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "../../../../lib/prisma";
 
-export async function POST(request: NextRequest, req: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
-    const webhookSecret = process.env.CLERK_WEBHOOK_KEY;
-
     const article = await prisma.article.create({
       data: {
         title: "asd",
@@ -20,6 +18,9 @@ export async function POST(request: NextRequest, req: NextRequest) {
       { status: 200 },
     );
   } catch (error) {
-    return new Response("Not available to search!", { status: 400 });
+    return NextResponse.json(
+      { message: "Not available to search!" },
+      { status: 400 },
+    );
   }
 }
