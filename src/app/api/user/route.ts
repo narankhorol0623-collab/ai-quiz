@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
       );
     } catch (error) {
       return NextResponse.json(
-        { message: "Invaliid Signature!" },
+        { message: "Invalid Signature!" },
         { status: 400 },
       );
     }
